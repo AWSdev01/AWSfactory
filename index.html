@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AWS Factory - Construisons ensemble l'avenir</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icônes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg1: #071018;
+            --bg2: #0b1626;
+            --card: #0f2236;
+            --accent: #6ee7ff;
+            --accent2: #9b7bff;
+            --text: #e9f3ff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(1200px 600px at 10% 0%, rgba(110,231,255,.12), transparent 60%), radial-gradient(900px 500px at 90% 10%, rgba(155,123,255,.12), transparent 55%), linear-gradient(180deg, var(--bg1), var(--bg2));
+            color: var(--text);
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar {
+            background: rgba(6, 15, 27, .72) !important;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .brand-mark img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,.85) !important;
+        }
+
+            .nav-link:hover {
+                color: white !important;
+            }
+
+        .btn-premium {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border: none;
+            color: #061018;
+            font-weight: 700;
+            border-radius: 999px;
+        }
+
+            .btn-premium:hover {
+                filter: brightness(1.05);
+                transform: translateY(-1px);
+            }
+
+        .hero {
+            padding: 34px 0 20px;
+            overflow: hidden;
+        }
+
+        .hero-decor {
+            position: absolute;
+            inset: auto -20% -25% -20%;
+            height: 420px;
+            background: radial-gradient(circle at 30% 20%, rgba(110,231,255,.22), transparent 55%), radial-gradient(circle at 70% 30%, rgba(155,123,255,.22), transparent 50%);
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .55rem .9rem;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 999px;
+            color: rgba(255,255,255,.9);
+        }
+
+        .hero-title {
+            font-weight: 900;
+            margin-top: 16px;
+            font-size: clamp(2rem, 3.2vw, 3.2rem);
+            letter-spacing: -.02em;
+        }
+
+        .hero-subtitle {
+            color: rgba(233,243,255,.86);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 48ch;
+        }
+
+        .hero-card {
+            position: relative;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.04);
+            box-shadow: 0 18px 55px rgba(0,0,0,.35);
+        }
+
+        /* --- Diaporama Hero --- */
+        .hero-slideshow {
+            position: relative;
+            width: 100%;
+            height: 420px;
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+            .hero-slide.active {
+                opacity: 1;
+            }
+
+        .hero-dots {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .hero-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.4);
+            border: 1px solid rgba(255,255,255,.6);
+            cursor: pointer;
+            transition: background .2s ease;
+        }
+
+            .hero-dot.active {
+                background: var(--accent);
+            }
+
+        .hero-card-overlay {
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 4;
+        }
+
+        .overlay-item {
+            flex: 1 1 150px;
+            padding: 10px 12px;
+            background: rgba(7,16,24,.65);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 14px;
+            color: rgba(255,255,255,.92);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .note {
+            color: rgba(233,243,255,.78);
+            padding: 10px 12px;
+            border: 1px dashed rgba(255,255,255,.18);
+            border-radius: 14px;
+            background: rgba(255,255,255,.03);
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        @media(min-width:992px) {
+            .hero-stats {
+                flex-direction: row;
+                gap: 14px;
+            }
+        }
+
+        .stat {
+            flex: 1;
+            padding: 12px 14px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 16px;
+        }
+
+        .stat-number {
+            font-weight: 900;
+            font-size: 1.05rem;
+        }
+
+        .stat-label {
+            color: rgba(233,243,255,.75);
+            font-size: .92rem;
+            margin-top: 2px;
+        }
+
+        .section {
+            padding: 70px 0;
+        }
+
+        .section-alt {
+            background: rgba(255,255,255,.02);
+            border-top: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .section-title h2 {
+            font-weight: 900;
+            font-size: 2rem;
+        }
+
+        .section-title p {
+            color: rgba(233,243,255,.78);
+            margin-top: .7rem;
+            max-width: 70ch;
+        }
+
+        .service-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 1.25rem;
+            padding: 22px;
+        }
+
+        .service-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, rgba(110,231,255,.18), rgba(155,123,255,.18));
+            border: 1px solid rgba(255,255,255,.12);
+            margin-bottom: 14px;
+        }
+
+        .service-title {
+            font-weight: 900;
+        }
+
+        .service-text {
+            color: rgba(233,243,255,.80);
+            line-height: 1.7;
+        }
+
+        .service-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .service-list li {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: rgba(233,243,255,.86);
+                font-weight: 600;
+            }
+
+            .service-list i {
+                color: var(--accent);
+                font-size: 1.1rem;
+            }
+
+        .service-image-card {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .service-image {
+            width: 100%;
+            height: 100%;
+            min-height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .service-image-badge {
+            position: absolute;
+            margin: 14px;
+            padding: 10px 12px;
+            background: rgba(7,16,24,.62);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 999px;
+            backdrop-filter: blur(6px);
+            font-weight: 800;
+            color: rgba(255,255,255,.94);
+        }
+
+        .gallery-tile {
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255,255,255,.03);
+            transition: transform .2s ease, filter .2s ease;
+            cursor: pointer;
+        }
+
+            .gallery-tile img {
+                width: 100%;
+                height: 190px;
+                object-fit: cover;
+                display: block;
+            }
+
+            .gallery-tile:hover {
+                transform: translateY(-4px);
+                filter: saturate(1.05);
+            }
+
+        /* --- Lightbox --- */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+            .lightbox-overlay.show {
+                display: flex;
+            }
+
+            .lightbox-overlay img {
+                max-width: 90vw;
+                max-height: 85vh;
+                border-radius: 12px;
+                box-shadow: 0 20px 60px rgba(0,0,0,.6);
+            }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .about-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 1.25rem;
+            padding: 22px;
+        }
+
+        .mini-pill {
+            padding: 10px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            color: rgba(233,243,255,.9);
+            font-weight: 700;
+        }
+
+        .about-visual img {
+            border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .contact-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 1.25rem;
+            padding: 22px;
+        }
+
+        .form-control {
+            background: rgba(255,255,255,.04) !important;
+            color: var(--text) !important;
+            border: 1px solid rgba(255,255,255,.12) !important;
+            border-radius: 14px !important;
+        }
+
+            .form-control:focus {
+                border-color: rgba(110,231,255,.5) !important;
+                box-shadow: 0 0 0 .25rem rgba(110,231,255,.15) !important;
+                outline: none;
+            }
+
+        .submit-toast {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .25s ease, transform .25s ease;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(110,231,255,.12);
+            border: 1px solid rgba(110,231,255,.25);
+            color: rgba(233,243,255,.95);
+            font-weight: 800;
+        }
+
+            .submit-toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .submit-toast.error {
+                background: rgba(255,110,110,.12);
+                border: 1px solid rgba(255,110,110,.25);
+            }
+
+        .contact-side-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 1.25rem;
+            padding: 22px;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(110,231,255,.12);
+            border: 1px solid rgba(255, 110, 110, 0.25);
+        }
+
+        .contact-side-card h4 {
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .contact-hint {
+            margin-top: 14px;
+            color: rgba(255, 233, 233, 0.78);
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(248, 2, 2, 0.03);
+            border: 1px dashed rgba(192, 10, 10, 0.14);
+        }
+
+        .footer {
+            background: rgba(0,0,0,.25);
+            border-top: 1px solid rgba(255,255,255,.08);
+        }
+
+        .footer-link {
+            color: rgba(255,255,255,.75);
+            text-decoration: none;
+        }
+
+            .footer-link:hover {
+                color: white;
+            }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-dark px-3 px-lg-4">
+            <a class="navbar-brand fw-semibold d-flex align-items-center" href="#">
+                <span class="brand-mark">
+                    <img src="logo.jpg" alt="Logo AWS Factory">
+                </span>
+                <span class="ms-2">AWS Factory</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                    aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#apropos">À propos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#galerie">Galerie</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-premium" href="#contact">
+                            <i class="bi bi-send me-2"></i>Demander un devis
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero position-relative">
+        <div class="container pt-5 pb-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <div class="hero-badge">
+                        <i class="bi bi-geo-alt-fill me-2"></i> Tunis • Dômes géodésiques en bois
+                    </div>
+
+                    <h1 class="hero-title">
+                        Construisons ensemble l'avenir
+                    </h1>
+
+                    <p class="hero-subtitle">
+                        AWS Factory conçoit des dômes géodésiques robustes, élégants et sur mesure — adaptés à de nombreux usages.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a class="btn btn-primary btn-lg" href="#galerie">
+                            <i class="bi bi-images me-2"></i>Voir nos réalisations
+                        </a>
+                        <a class="btn btn-outline-light btn-lg" href="#contact">
+                            <i class="bi bi-telephone me-2"></i>Contacter l'équipe
+                        </a>
+                    </div>
+
+                    <div class="hero-stats mt-4">
+                        <div class="stat">
+                            <div class="stat-number">Sur mesure</div>
+                            <div class="stat-label">Conception & fabrication</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">Premium</div>
+                            <div class="stat-label">Finitions soignées</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">Robuste</div>
+                            <div class="stat-label">Structure géodésique</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="hero-card">
+                        <div class="hero-slideshow" id="heroSlideshow">
+                            <img src="dome1.jpg" alt="Dôme géodésique AWS Factory" class="hero-slide active">
+                            <img src="dome2.jpg" alt="Dôme géodésique AWS Factory 2" class="hero-slide">
+                            <img src="dome3.jpg" alt="Dôme géodésique AWS Factory 3" class="hero-slide">
+                            <img src="dome4.jpg" alt="Dôme géodésique AWS Factory 4" class="hero-slide">
+
+                            <div class="hero-dots" id="heroDots">
+                                <span class="hero-dot active" data-index="0"></span>
+                                <span class="hero-dot" data-index="1"></span>
+                                <span class="hero-dot" data-index="2"></span>
+                                <span class="hero-dot" data-index="3"></span>
+                            </div>
+
+                            <div class="hero-card-overlay">
+                                <div class="overlay-item">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>Solidité</span>
+                                </div>
+                                <div class="overlay-item">
+                                    <i class="bi bi-brush"></i>
+                                    <span>Design</span>
+                                </div>
+                                <div class="overlay-item">
+                                    <i class="bi bi-gear-wide-connected"></i>
+                                    <span>Sur mesure</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Décor -->
+        <div class="hero-decor" aria-hidden="true"></div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nos services</h2>
+                <p>Une approche dédiée aux dômes géodésiques en bois, avec une fabrication pensée pour durer.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="service-card h-100">
+                        <div class="service-icon">
+                            <i class="bi bi-house-gear"></i>
+                        </div>
+                        <h3 class="service-title">
+                            Dômes d’Extérieur – Élégance & Fonctionnalité
+                        </h3>
+                        <p class="service-text">
+                            Cabannes & abris au style géodésique : une structure unique, efficace et esthétique.
+                        </p>
+                        <ul class="service-list">
+                            <li><i class="bi bi-check2-circle"></i> Design géodésique</li>
+                            <li><i class="bi bi-check2-circle"></i> Fabrication sur mesure</li>
+                            <li><i class="bi bi-check2-circle"></i> Adapté à de nombreux usages</li>
+                            <li><i class="bi bi-check2-circle"></i> Dimensions & Utilisations</li>
+                            <li> ✔ Dimension 1,5m Diamètre 3m Hauteur 2,17m Surface au sol 4,27 m² Balcons, petits jardins, abris</li>
+                            <li> ✔ Dimension 2m Diamètre 4m Hauteur 2,89m Surface au sol 7,60m² Serres, espaces détente, jeux</li>
+                            <li> ✔ Dimension 3m Diamètre 6m Hauteur 4,34m Surface au sol 17,10m²Jardins d’hiver, grands abris</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="service-card h-100 service-image-card">
+                        <img src="exemple.png" alt="Cabanne atypique style dome géodésique" class="service-image" />
+                        <div class="service-image-badge">
+                            <i class="bi bi-sparkles me-2"></i> Cabanne atypique • Style dome géodésique
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galerie -->
+    <section id="galerie" class="section section-alt">
+        <div class="container">
+            <div class="section-title">
+                <h2>Galerie</h2>
+                <p>Découvrez nos réalisations et notre inspiration.</p>
+            </div>
+
+            <div class="row g-3" id="galleryGrid">
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-1.jpg" class="img-fluid" alt="Galerie 1">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-2.jpg" class="img-fluid" alt="Galerie 2">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-3.jpg" class="img-fluid" alt="Galerie 3">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-4.jpg" class="img-fluid" alt="Galerie 4">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-5.jpg" class="img-fluid" alt="Galerie 5">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-6.jpg" class="img-fluid" alt="Galerie 6">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-7.jpg" class="img-fluid" alt="Galerie 6">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-8.jpg" class="img-fluid" alt="Galerie 6">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="gallery-tile">
+                        <img src="gallery-9.jpg" class="img-fluid" alt="Galerie 6">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <img src="" alt="Image agrandie" id="lightboxImage">
+    </div>
+
+    <!-- À propos -->
+    <section id="apropos" class="section">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <div class="about-card">
+                        <h2 class="mb-3">À propos</h2>
+                        <p class="mb-3">
+                            Bienvenue sur le site officiel d'AWS Factory. Nous concevons des dômes géodésiques en bois sur mesure,
+                            robustes, élégants et adaptés à de nombreux usages.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="mini-pill"><i class="bi bi-check-circle me-2"></i>Sur mesure</div>
+                            <div class="mini-pill"><i class="bi bi-check-circle me-2"></i>Design premium</div>
+                            <div class="mini-pill"><i class="bi bi-check-circle me-2"></i>Structure géodésique</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="about-visual">
+                        <img src="about.png" alt="AWS Factory - dômes géodésiques" class="img-fluid rounded-4 shadow" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section section-alt">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact</h2>
+                <p>Parlez-nous de votre projet : on vous répondra rapidement.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="contact-card">
+                        <h3 class="mb-3"><i class="bi bi-chat-left-dots me-2"></i>Demande de devis</h3>
+
+                        <form id="contactForm" action="https://formspree.io/f/xyegopjy" method="POST">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom</label>
+                                    <input class="form-control" type="text" name="nom" placeholder="Votre nom" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input class="form-control" type="email" name="email" placeholder="vous@email.com" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Message</label>
+                                    <textarea class="form-control" name="message" rows="4" placeholder="Décrivez votre projet..." required></textarea>
+                                </div>
+
+                                <div class="col-12 d-grid">
+                                    <button class="btn btn-premium btn-lg" type="submit">
+                                        <i class="bi bi-send me-2"></i>Envoyer
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="submit-toast" id="submitToast" role="status" aria-live="polite"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="contact-side">
+                        <div class="contact-side-card">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="contact-icon"><i class="bi bi-envelope"></i></div>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p class="text">
+                                        <b>contact@awsfactory.com</b>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="contact-icon"><i class="bi bi-telephone"></i></div>
+                                <div>
+                                    <h4>Téléphone</h4>
+                                    <p class="text">
+                                        <b>97 112 030</b>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
+                                <div>
+                                    <h4>Tunis</h4>
+                                    <p class="text">
+                                        Tunis
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <a class="btn btn-outline-light w-100" href="#galerie">
+                                    <i class="bi bi-arrow-left me-2"></i>Revenir à la galerie
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-hint">
+                            <i class="bi bi-lightning-charge me-2"></i>https://www.instagram.com/aws_factory1/
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container py-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                <div class="text-white-50">
+                    © <span id="year"></span> AWS Factory • Tunisie
+                </div>
+                <div class="text-white-50">
+                    <a class="footer-link" href="#contact">Contact</a> • <a class="footer-link" href="#services">Services</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Petit JS -->
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        /* --- Diaporama Hero --- */
+        (function () {
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.hero-dot');
+            let current = 0;
+            const total = slides.length;
+
+            function showSlide(index) {
+                slides.forEach(s => s.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                current = index;
+            }
+
+            function nextSlide() {
+                showSlide((current + 1) % total);
+            }
+
+            let interval = setInterval(nextSlide, 3000);
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    clearInterval(interval);
+                    showSlide(parseInt(dot.dataset.index));
+                    interval = setInterval(nextSlide, 3000);
+                });
+            });
+        })();
+
+        /* --- Lightbox Galerie --- */
+        (function () {
+            const galleryImages = document.querySelectorAll('.gallery-tile img');
+            const overlay = document.getElementById('lightboxOverlay');
+            const lightboxImg = document.getElementById('lightboxImage');
+            const closeBtn = document.getElementById('lightboxClose');
+
+            galleryImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src;
+                    lightboxImg.alt = img.alt;
+                    overlay.classList.add('show');
+                });
+            });
+
+            function closeLightbox() {
+                overlay.classList.remove('show');
+                lightboxImg.src = '';
+            }
+
+            closeBtn.addEventListener('click', closeLightbox);
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeLightbox();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeLightbox();
+            });
+        })();
+
+        /* --- Formulaire de devis via Formspree --- */
+        (function () {
+            const form = document.getElementById('contactForm');
+            const toast = document.getElementById('submitToast');
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const data = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: data,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        toast.textContent = '✅ Votre demande a bien été envoyée !';
+                        toast.classList.remove('error');
+                        toast.classList.add('show');
+                        form.reset();
+                    } else {
+                        toast.textContent = '❌ Une erreur est survenue. Veuillez réessayer.';
+                        toast.classList.add('error', 'show');
+                    }
+                } catch (error) {
+                    toast.textContent = '❌ Une erreur est survenue. Veuillez réessayer.';
+                    toast.classList.add('error', 'show');
+                }
+
+                setTimeout(() => toast.classList.remove('show'), 4000);
+            });
+        })();
+    </script>
+</body>
+</html>
